@@ -48,6 +48,7 @@ public class UserModel implements UserDetails {
 //    }
 
     public void setUsername(String username) {
+
         this.username = username;
     }
 
@@ -56,6 +57,7 @@ public class UserModel implements UserDetails {
 //    }
 
     public void setPassword(String password) {
+
         this.password = password;
     }
 

@@ -31,7 +31,7 @@ public class userServiceImpl implements userService{
 
     private PasswordEncoder passwordEncoder;
 
-
+// adding users to the DB
     @Override
     public UserModel addUser(UserModel usermodel) {
         log.info("Adding user {} to the db",usermodel.getName());
@@ -40,13 +40,13 @@ public class userServiceImpl implements userService{
         usermodel.setPassword(encodedPassword);
         return userrepo.save(usermodel);
     }
-
+// Adding roles to the db
     @Override
     public rolesModel addrole(rolesModel rolemodel) {
         log.info("Adding role {} to the db",rolemodel.getName());
         return rolerepo.save(rolemodel);
     }
-
+//adding roles to the users added in the db
     @Override
     public void addroleToUser(String username, String roleName) {
         log.info("Adding a specific role  to a user");
@@ -55,19 +55,19 @@ public class userServiceImpl implements userService{
         usermodel.getRoles().add(rolemodel);
 
     }
-
+// getting a specific user from the database
     @Override
     public UserModel getUser(String username) {
         log.info("Getting a specific user from the db");
         return userrepo.findByUsername(username).get();
     }
-
+//getting all the users from the db
     @Override
     public List<UserModel> getUsers() {
         log.info("Getting all users from the db");
         return userrepo.findAll();
     }
-
+// Checking all the roles from the db
     @Override
     public List<rolesModel> getRoles() {
         log.info("Getting all roles from the db");
