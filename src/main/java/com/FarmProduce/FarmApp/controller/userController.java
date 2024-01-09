@@ -1,10 +1,12 @@
 package com.FarmProduce.FarmApp.controller;
 
+import com.FarmProduce.FarmApp.ErrorHandling.UserNotFoundException;
 import com.FarmProduce.FarmApp.auth.AuthenticationRequest;
 import com.FarmProduce.FarmApp.auth.AuthenticationResponse;
 import com.FarmProduce.FarmApp.auth.ResponseModel;
 import com.FarmProduce.FarmApp.model.UserModel;
 import com.FarmProduce.FarmApp.model.rolesModel;
+import com.FarmProduce.FarmApp.repository.UserRepo;
 import com.FarmProduce.FarmApp.service.AuthenticationService;
 import com.FarmProduce.FarmApp.service.userService;
 import lombok.Data;
@@ -17,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RequestMapping("/")
+
 public class userController {
 
     private final userService userService;
@@ -55,6 +58,31 @@ public class userController {
 
       return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
 
+    }
+    /*Delete the specific bot using ID*/
+    @DeleteMapping("/user/{id}")
+    public void delUser(@PathVariable Long id) {
+        userService.delUser(id);
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel usermodel) {
+        UserModel existingUser = userService.updateUser(usermodel);
+        if (existingUser != null) {
+            return new ResponseEntity<>(existingUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserModel> getUserById(@PathVariable Long id) {
+        try {
+            UserModel user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

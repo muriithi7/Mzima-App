@@ -46,7 +46,10 @@ public class UserModel implements UserDetails {
 //    public String getUsername() {
 //        return username;
 //    }
-
+@PrePersist
+protected void onCreate() {
+    date_created = new Date(); // Set the current date when the entity is persisted
+}
     public void setUsername(String username) {
 
         this.username = username;

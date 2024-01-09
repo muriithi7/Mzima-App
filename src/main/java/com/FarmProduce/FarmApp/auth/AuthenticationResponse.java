@@ -16,6 +16,7 @@ public class AuthenticationResponse {
     private String name;
     private String token;
     private String refreshToken;
+    private String status;
     //private String message;
 
 

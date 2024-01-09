@@ -70,9 +70,9 @@ public class AuthenticationService {
                     var name = usermodel.getName();
                     var id = usermodel.getId();
 
-                    var status = HttpStatus.OK;
+                    var status = "login";
 
-                    return AuthenticationResponse.builder().token(jwtToken).refreshToken(jwtRefreshToken).username(username).id(id).name(name).build();
+                    return AuthenticationResponse.builder().token(jwtToken).refreshToken(jwtRefreshToken).username(username).id(id).name(name).status(status).build();
 
                 }
 

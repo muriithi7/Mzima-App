@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,7 +24,7 @@ import static org.springframework.http.HttpMethod.GET;
 @RequiredArgsConstructor
 
 
-public class SecurityConfig{
+public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -36,8 +37,9 @@ public class SecurityConfig{
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/").permitAll()
-                //.requestMatchers("/**","favicon.ico").permitAll()
+                // .requestMatchers("/**","favicon.ico").permitAll()
                 .requestMatchers(HttpMethod.POST, "/userlogin").permitAll()
+                // .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(GET, "/users").hasAnyAuthority("Role_Super_Admin")
                 .anyRequest()
                 .authenticated()
@@ -57,6 +59,7 @@ public class SecurityConfig{
         http.formLogin().permitAll();
 
         return http.build();
+
 
     }
 

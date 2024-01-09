@@ -23,4 +23,12 @@ public interface userService {
     //get all roles available
     List<rolesModel>getRoles();
 
+    //delete a specific user
+
+   void delUser(Long id);
+
+   //update user details
+   UserModel updateUser(UserModel usermodel);
+//get user by id
+    UserModel getUserById(Long id);
 }
