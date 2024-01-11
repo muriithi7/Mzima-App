@@ -69,7 +69,7 @@ public class userController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture, @RequestBody UserModel usermodel) {
+    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel usermodel, @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) {
         UserModel existingUser = userService.updateUser(usermodel, profilePicture);
         if (existingUser != null) {
             return new ResponseEntity<>(existingUser, HttpStatus.OK);

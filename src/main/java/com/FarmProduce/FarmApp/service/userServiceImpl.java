@@ -110,6 +110,7 @@ public class userServiceImpl implements userService{
         Optional<UserModel> optionalUser = userrepo.findById(usermodel.getId());
 
 
+
         if (optionalUser.isPresent()) {
             UserModel existingUser = optionalUser.get();
             // Update the user's name and username
@@ -124,19 +125,15 @@ public class userServiceImpl implements userService{
                 }
             }
             existingUser.setRoles(updatedRoles);
-            // Update the profile picture
-            try {
-                // Handle profile picture upload
-                if (profilePicture != null && !profilePicture.isEmpty()) {
+
+                if (usermodel.getProfileImagePath() != null && !usermodel.getProfileImagePath().isEmpty()) {
                     // Save the profile picture and update the path in the database
-                    String profilePicturePath = saveProfilePicture(profilePicture);
-                    existingUser.setProfileImagePath(profilePicturePath);
+                    existingUser.setProfileImagePath(usermodel.getProfileImagePath());
+
+
 
                 }
-            } catch (IOException e) {
-                // Handle the exception, you might want to log it
-                throw new RuntimeException("Error updating user profile picture", e);
-            }
+
 
             // Check if the password is updated
             if (!passwordEncoder.matches(usermodel.getPassword(), existingUser.getPassword())) {

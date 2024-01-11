@@ -20,7 +20,7 @@ public class UserModel implements UserDetails {
     private String username;
     private String password;
 
-    @Column(name = "profile_image_path") // Adjust the column name to match your database schema
+    @Column(name = "profile_Image_Path") // Adjust the column name to match your database schema
     private String profileImagePath; // Profile image path
     @ManyToMany(fetch = FetchType.EAGER)// load all the roles each time a user is loaded
     private Collection<rolesModel> roles = new ArrayList<>();

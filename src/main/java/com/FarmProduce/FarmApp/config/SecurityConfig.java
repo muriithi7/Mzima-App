@@ -37,10 +37,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/").permitAll()
-                // .requestMatchers("/**","favicon.ico").permitAll()
                 .requestMatchers(HttpMethod.POST, "/userlogin").permitAll()
-                //.antMatchers("/api/upload-profile-picture").permitAll() // Allow uploading profile pictures
-                // .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(GET, "/users").hasAnyAuthority("Role_Super_Admin")
                 .anyRequest()
                 .authenticated()
