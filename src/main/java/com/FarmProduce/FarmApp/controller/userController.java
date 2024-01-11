@@ -15,8 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -66,13 +69,14 @@ public class userController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel usermodel) {
-        UserModel existingUser = userService.updateUser(usermodel);
+    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture, @RequestBody UserModel usermodel) {
+        UserModel existingUser = userService.updateUser(usermodel, profilePicture);
         if (existingUser != null) {
             return new ResponseEntity<>(existingUser, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
     }
 
     @GetMapping("/user/{id}")
@@ -84,7 +88,15 @@ public class userController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @PostMapping("/upload-profile-picture")
+    public ResponseEntity<Map<String, String>> uploadProfilePicture(
+            @RequestParam("profilePicture") MultipartFile file
+    ) {
+        String filePath = userService.uploadProfilePicture(file);
+        Map<String, String> response = new HashMap<>();
+        response.put("filePath", filePath);
+        return ResponseEntity.ok(response);
+    }
 
 
 }

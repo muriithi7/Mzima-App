@@ -7,19 +7,24 @@ import com.FarmProduce.FarmApp.repository.RoleRepo;
 import com.FarmProduce.FarmApp.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,9 @@ public class userServiceImpl implements userService{
 
 
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
 // adding users to the DB
     @Override
@@ -97,17 +105,16 @@ public class userServiceImpl implements userService{
  //updating user details
 
     @Override
-    public UserModel updateUser(UserModel usermodel) {
+
+    public UserModel updateUser(UserModel usermodel, MultipartFile profilePicture) {
         Optional<UserModel> optionalUser = userrepo.findById(usermodel.getId());
 
 
         if (optionalUser.isPresent()) {
             UserModel existingUser = optionalUser.get();
-
             // Update the user's name and username
             existingUser.setName(usermodel.getName());
             existingUser.setUsername(usermodel.getUsername());
-
             // Update user roles (assuming UserModel has a @ManyToMany relationship with rolesModel)
             List<rolesModel> updatedRoles = new ArrayList<>();
             for (rolesModel role : usermodel.getRoles()) {
@@ -117,6 +124,19 @@ public class userServiceImpl implements userService{
                 }
             }
             existingUser.setRoles(updatedRoles);
+            // Update the profile picture
+            try {
+                // Handle profile picture upload
+                if (profilePicture != null && !profilePicture.isEmpty()) {
+                    // Save the profile picture and update the path in the database
+                    String profilePicturePath = saveProfilePicture(profilePicture);
+                    existingUser.setProfileImagePath(profilePicturePath);
+
+                }
+            } catch (IOException e) {
+                // Handle the exception, you might want to log it
+                throw new RuntimeException("Error updating user profile picture", e);
+            }
 
             // Check if the password is updated
             if (!passwordEncoder.matches(usermodel.getPassword(), existingUser.getPassword())) {
@@ -129,6 +149,36 @@ public class userServiceImpl implements userService{
             throw new UserNotFoundException(usermodel.getId());
         }
     }
+
+
+
+    // Save the profile picture to the specified directory
+    private String saveProfilePicture(MultipartFile file) throws IOException {
+        Path uploadPath = Path.of(uploadDir);
+
+        // Create a unique filename
+        String uniqueFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+        // Save the file to the specified folder using uploadPath
+        Path filePath = uploadPath.resolve(uniqueFileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Return the file path to save in the database
+        return filePath.toString();
+    }
+
+    @Override
+    public String uploadProfilePicture(MultipartFile file) {
+        try {
+            // Save the profile picture to the specified directory
+            String profilePicturePath = saveProfilePicture(file);
+            return profilePicturePath;
+        } catch (IOException e) {
+            // Handle the exception, you might want to log it
+            throw new RuntimeException("Error uploading profile picture", e);
+        }
+    }
+
 
     @Override
     public UserModel getUserById(Long id) {

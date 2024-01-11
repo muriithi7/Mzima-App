@@ -2,6 +2,7 @@ package com.FarmProduce.FarmApp.service;
 
 import com.FarmProduce.FarmApp.model.UserModel;
 import com.FarmProduce.FarmApp.model.rolesModel;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,7 +29,11 @@ public interface userService {
    void delUser(Long id);
 
    //update user details
-   UserModel updateUser(UserModel usermodel);
-//get user by id
+   UserModel updateUser(UserModel usermodel, MultipartFile profilePicture);
+   //get user by id
     UserModel getUserById(Long id);
+
+    String uploadProfilePicture(MultipartFile profilePicture);
+
+
 }

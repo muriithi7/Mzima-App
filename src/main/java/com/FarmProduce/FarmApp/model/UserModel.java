@@ -19,6 +19,9 @@ public class UserModel implements UserDetails {
     private String name;
     private String username;
     private String password;
+
+    @Column(name = "profile_image_path") // Adjust the column name to match your database schema
+    private String profileImagePath; // Profile image path
     @ManyToMany(fetch = FetchType.EAGER)// load all the roles each time a user is loaded
     private Collection<rolesModel> roles = new ArrayList<>();
 
@@ -43,21 +46,23 @@ public class UserModel implements UserDetails {
         this.name = name;
     }
 
-//    public String getUsername() {
-//        return username;
-//    }
-@PrePersist
-protected void onCreate() {
-    date_created = new Date(); // Set the current date when the entity is persisted
-}
+
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
+    @PrePersist
+    protected void onCreate() {
+        date_created = new Date(); // Set the current date when the entity is persisted
+    }
     public void setUsername(String username) {
 
         this.username = username;
     }
 
-//    public String getPassword() {
-//        return password;
-//    }
 
     public void setPassword(String password) {
 
@@ -117,5 +122,5 @@ protected void onCreate() {
     public boolean isEnabled() {
         return true; // assuming all accounts are enabled by default
     }
-    /////
+
 }
